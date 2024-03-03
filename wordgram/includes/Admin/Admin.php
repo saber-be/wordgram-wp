@@ -293,12 +293,11 @@ class Admin {
 			'shop_name'           => get_bloginfo( 'name' ),
 			'platform'            => 'WordPress/WooCommerce',
 			'platform_url'        => home_url(),
-			'scopes'              => 'read,write',
 			'redirect_url'        => admin_url( 'admin-post.php?action=wordgram-connect-response' ),
 			'state'               => $identifier,
 			'product_webhook_url' => admin_url( 'admin-ajax.php?action=wordgram-product-hook' ),
 			'order_webhook_url'   => admin_url( 'admin-ajax.php?action=wordgram-order-hook' ),
-		], 'https://admin.wordgram.com/stores/third-party/connect' );
+		], 'http://localhost:81/register-shop' );
 	}
 
 	public static function wordgram_connect_response() {

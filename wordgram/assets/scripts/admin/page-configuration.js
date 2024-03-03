@@ -33,8 +33,10 @@ jQuery(document).ready(function ($) {
         const height = 600;
         const left = window.screenX + (parentWindowWidth > width ? (parentWindowWidth - width) / 2 : 0);
         const top = window.screenY + (parentWindowHeight > height ? (parentWindowHeight - height) / 2 : 0);
+        const instagramUsername = $('#instagram_username').val();
+        const url = $(this).data('url') + '&instagram_username=' + instagramUsername;
         window.open(
-            $(this).data('url'),
+            url,
             '_blank',
             'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top +
             ',location=yes,status=yes,scrollable=yes,resizable=yes'

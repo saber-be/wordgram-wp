@@ -19,6 +19,7 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
 			    "into your website. This should only take a minute!", 'wordgram' );
 			?>
         </p>
+        <input type="text" id="instagram_username" name="instagram_username" placeholder="Enter your instagram username">
         <button class="button button-primary connect"
                 data-url="<?php echo esc_url( Admin::get_wordgram_connect_url() ); ?>">
 			<?php _e( 'Connect to Wordgram', 'wordgram' ); ?>
