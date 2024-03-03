@@ -15,6 +15,8 @@ services:
       WORDPRESS_DB_PASSWORD: examplepass
       WORDPRESS_DB_NAME: exampledb
       WORDGRAM_SERVICE_URL: http://localhost:81
+    volumes:
+      - ./wordgram:/usr/src/wordpress/wp-content/plugins/wordgram
 
   db:
     image: mysql:8.0

@@ -7,4 +7,3 @@ RUN set -eux; \
 RUN apt-get update && apt-get install -y unzip
 COPY woocommerce.8.6.1.zip ./wp-content/plugins/woocommerce.8.6.1.zip
 RUN unzip ./wp-content/plugins/woocommerce.8.6.1.zip -d ./wp-content/plugins/
-COPY wordgram/ ./wp-content/plugins/wordgram/
