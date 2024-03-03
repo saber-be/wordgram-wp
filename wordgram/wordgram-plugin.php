@@ -20,6 +20,7 @@ use WordgramPlugin\WordgramPlugin;
 defined( 'ABSPATH' ) || exit;
 
 define( 'WORDGRAM_PLUGIN_FILE', __FILE__ );
+define( 'WORDGRAM_SERVICE_URL', getenv_docker('WORDGRAM_SERVICE_URL', 'http://localhost:81') );
 
 require_once __DIR__ . '/vendor/autoload.php';
 

@@ -297,7 +297,7 @@ class Admin {
 			'state'               => $identifier,
 			'product_webhook_url' => admin_url( 'admin-ajax.php?action=wordgram-product-hook' ),
 			'order_webhook_url'   => admin_url( 'admin-ajax.php?action=wordgram-order-hook' ),
-		], 'http://localhost:81/register-shop' );
+		], WORDGRAM_SERVICE_URL.'/register-shop' );
 	}
 
 	public static function wordgram_connect_response() {
