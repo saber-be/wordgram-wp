@@ -1,10 +1,7 @@
 # wordgram-wp
-## Step 1: Build Docker Image
-```bash
-docker build -t wordgram-wp .
-```
 
-## Step 2: Run Docker Compose
+## Run Docker Compose
 ```bash
+docker-compose build
 docker-compose up -d
 ```
