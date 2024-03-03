@@ -15,8 +15,6 @@ services:
       WORDPRESS_DB_PASSWORD: examplepass
       WORDPRESS_DB_NAME: exampledb
       WORDGRAM_SERVICE_URL: http://localhost:81
-    volumes:
-      - ./html:/var/www/html
 
   db:
     image: mysql:8.0
