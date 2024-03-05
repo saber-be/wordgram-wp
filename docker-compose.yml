@@ -8,13 +8,13 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - 8080:80
+      - 8081:80
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: exampleuser
       WORDPRESS_DB_PASSWORD: examplepass
       WORDPRESS_DB_NAME: exampledb
-      WORDGRAM_SERVICE_URL: http://localhost:81
+      WORDGRAM_SERVICE_URL: http://92.246.138.182:81
       WORDPRESS_DEBUG: true
     volumes:
       - ./wordgram:/usr/src/wordpress/wp-content/plugins/wordgram
