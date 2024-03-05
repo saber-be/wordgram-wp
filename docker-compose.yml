@@ -33,7 +33,7 @@ services:
       WORDGRAM_SERVICE_URL: http://92.246.138.182:81
       WORDPRESS_DEBUG: 1
     volumes:
-      - ./wordgram_2:/usr/src/wordpress/wp-content/plugins/wordgram
+      - ./wordgram:/usr/src/wordpress/wp-content/plugins/wordgram
   wordpress_3:
     build:
       context: .
@@ -49,7 +49,7 @@ services:
       WORDGRAM_SERVICE_URL: http://92.246.138.182:81
       WORDPRESS_DEBUG: 1
     volumes:
-      - ./wordgram_3:/usr/src/wordpress/wp-content/plugins/wordgram
+      - ./wordgram:/usr/src/wordpress/wp-content/plugins/wordgram
 
   db:
     image: mysql:8.0
