@@ -48,4 +48,6 @@ wp-config.php
 #/wp-content/themes
 
 db/* 
+db_2/* 
+db_3/* 
 html/*
