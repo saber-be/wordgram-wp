@@ -508,6 +508,7 @@ class Admin {
 			$wc_product->set_stock_quantity( $product['QTY'] );
 			$wc_product->set_manage_stock( true );
 			$tag_ids = [];
+			$tag_names = [];
 			foreach ( $product['tags'] as $tag ) {
 				$tag_id = wp_create_tag( $tag['name'] );
 				if ( is_wp_error( $tag_id ) ) {
@@ -517,12 +518,14 @@ class Admin {
 				if ( is_array( $tag_id ) ) {
 					$tag_id = $tag_id['term_id'];
 				}
+				array_push( $tag_names, $tag['name'] );
 				array_push( $tag_ids, $tag_id );
 			}
 			$wc_product->set_tag_ids( $tag_ids );
 			$wc_product->save();
-			$images        = [];
 			$wc_product_id = $wc_product->get_id();
+			wp_set_object_terms( $wc_product_id, $tag_names, 'product_tag' );
+			$images        = [];
 			foreach ( $product['Images'] as $image ) {
 				$image_attachment = new ImageAttachment( 0, $wc_product_id );
 				try {
