@@ -51,3 +51,6 @@ db/*
 db_2/* 
 db_3/* 
 html/*
+plugins/*
+!plugins/wordgram
+uploads*/*
