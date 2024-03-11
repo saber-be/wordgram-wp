@@ -27,20 +27,25 @@ jQuery(document).ready(function ($) {
     }
 
     $container.find('.not-connected button.connect').on('click', function (e) {
-        const parentWindowWidth = $(window).width();
-        const parentWindowHeight = $(window).height();
-        const width = 800;
-        const height = 600;
-        const left = window.screenX + (parentWindowWidth > width ? (parentWindowWidth - width) / 2 : 0);
-        const top = window.screenY + (parentWindowHeight > height ? (parentWindowHeight - height) / 2 : 0);
-        const instagramUsername = $('#instagram_username').val();
-        const url = $(this).data('url') + '&instagram_username=' + instagramUsername;
-        window.open(
-            url,
-            '_blank',
-            'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top +
-            ',location=yes,status=yes,scrollable=yes,resizable=yes'
-        );
+        e.preventDefault();
+        const $form = $(this).closest('form');
+        data = {};
+        $form.find('input').each(function() {
+            data[$(this).attr('name')] = $(this).val();
+        });
+        data = JSON.stringify(data);
+        $.ajax({
+            url: $form.attr('action'),
+            method: $form.attr('method'),
+            contentType: 'application/json',
+            data: data,
+            success: function(response) {
+                alert(response.message);
+            },
+            error: function(xhr, status, error) {
+                alert("Something went wrong. Please try again later.");
+            }
+        });
     });
 
     $container.find('.connected button.disconnect').on('click', function (e) {

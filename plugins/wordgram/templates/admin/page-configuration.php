@@ -19,11 +19,21 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
 			    "into your website. This should only take a minute!", 'wordgram' );
 			?>
         </p>
-        <input type="text" id="instagram_username" name="instagram_username" placeholder="Enter your instagram username">
-        <button class="button button-primary connect"
-                data-url="<?php echo esc_url( Admin::get_wordgram_connect_url() ); ?>">
-			<?php _e( 'Connect to Wordgram', 'wordgram' ); ?>
+        <form action="<?php echo(WORDGRAM_SERVICE_URL.'/register-shop'); ?>" method="post">
+            <input type="text" id="instagram_username" name="instagram_username" placeholder="Enter your instagram username">
+            <input type="hidden" name="shop_name" value="<?php echo get_bloginfo( 'name' ); ?>">
+            <input type="hidden" name="platform" value="WordPress/WooCommerce">
+            <input type="hidden" name="platform_url" value="<?php echo home_url(); ?>">
+            <input type="hidden" name="redirect_url" value="<?php echo admin_url( 'admin-post.php?action=wordgram-connect-response' ); ?>">
+            <input type="hidden" name="state" value="<?php echo $identifier; ?>">
+            <input type="hidden" name="product_webhook_url" value="<?php echo admin_url( 'admin-ajax.php?action=wordgram-product-hook' ); ?>">
+            <input type="hidden" name="order_webhook_url" value="<?php echo admin_url( 'admin-ajax.php?action=wordgram-order-hook' ); ?>">
+            
+        <button class="button button-primary connect" >
+            <?php _e( 'Connect to Wordgram', 'wordgram' ); ?>
         </button>
+        
+    </form>
     </section>
     <section class="testing">
         <span class="spinner is-active"></span>
