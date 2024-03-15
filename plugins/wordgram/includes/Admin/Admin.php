@@ -483,74 +483,87 @@ class Admin {
 		$errors               = [];
 		$inserted_product_ids = [];
 		foreach ( $products as $product ) {
-			 
-				$wc_product = new \WC_Product_Simple();
-				try {
-					$wc_product->set_sku( $product['SKU'] );
-				} catch ( \WC_Data_Exception $e ) {
-					if ( $is_update ) {
-						$wc_product = wc_get_product( wc_get_product_id_by_sku( $product['SKU'] ) );
-						if ( ! is_a( $wc_product, \WC_Product::class ) ) {
-							array_push( $errors, new \WP_Error(
-								'product_not_found',
-								"Product with SKU: {$product['SKU']} couldn't be found."
-							) );
-							continue;
-						}
-					}else{
+
+			$wc_product = new \WC_Product_Simple();
+			try {
+				$wc_product->set_sku($product['SKU']);
+			} catch (\WC_Data_Exception $e) {
+				if ($is_update) {
+					$wc_product = wc_get_product(wc_get_product_id_by_sku($product['SKU']));
+					if (!is_a($wc_product, \WC_Product::class)) {
+						array_push($errors, new \WP_Error(
+							'product_not_found',
+							"Product with SKU: {$product['SKU']} couldn't be found."
+						));
 						continue;
 					}
-				}
-			
-			$wc_product->set_name( $product['Name'] );
-			$wc_product->set_description( $product['Description'] );
-			$wc_product->set_regular_price( $product['Price'] );
-			$wc_product->set_stock_quantity( $product['QTY'] );
-			$wc_product->set_manage_stock( true );
-			$tag_ids = [];
-			$tag_names = [];
-			foreach ( $product['tags'] as $tag ) {
-				$tag_id = wp_create_tag( $tag['name'] );
-				if ( is_wp_error( $tag_id ) ) {
-					array_push( $errors, $tag_id );
+				} else {
 					continue;
 				}
-				if ( is_array( $tag_id ) ) {
-					$tag_id = $tag_id['term_id'];
-				}
-				array_push( $tag_names, $tag['name'] );
-				array_push( $tag_ids, $tag_id );
 			}
-			$wc_product->set_tag_ids( $tag_ids );
+			if (isset($product['Name'])) {
+				$wc_product->set_name($product['Name']);
+			}
+			if (isset($product['Description'])) {
+				$wc_product->set_description($product['Description']);
+			}
+			if (isset($product['Price'])) {
+				$wc_product->set_regular_price($product['Price']);
+			}
+			if (isset($product['QTY'])) {
+				$wc_product->set_stock_quantity($product['QTY']);
+			}
+			$wc_product->set_manage_stock(true);
+			if (isset($product['tags'])) {
+				$tag_ids = [];
+				$tag_names = [];
+				foreach ($product['tags'] as $tag) {
+					$tag_id = wp_create_tag($tag['name']);
+					if (is_wp_error($tag_id)) {
+						array_push($errors, $tag_id);
+						continue;
+					}
+					if (is_array($tag_id)) {
+						$tag_id = $tag_id['term_id'];
+					}
+					array_push($tag_names, $tag['name']);
+					array_push($tag_ids, $tag_id);
+				}
+				$wc_product->set_tag_ids($tag_ids);
+			}
 			$wc_product->save();
 			$wc_product_id = $wc_product->get_id();
-			wp_set_object_terms( $wc_product_id, $tag_names, 'product_tag' );
-			$images        = [];
-			foreach ( $product['Images'] as $image ) {
-				$image_attachment = new ImageAttachment( 0, $wc_product_id );
-				try {
-					$image_attachment->upload_image_from_src( $image['url'] );
-				} catch ( \WC_REST_Exception $e ) {
-					echo("error".$e->getMessage()."<br>...".$product['SKU']."...".$image['url']);
-					array_push( $errors, $e->getMessage() );
-					continue;
+			if (isset($product['tags'])) {
+				wp_set_object_terms($wc_product_id, $tag_names, 'product_tag');
+			}
+			if (isset($product['Images'])) {
+				$images        = [];
+				foreach ($product['Images'] as $image) {
+					$image_attachment = new ImageAttachment(0, $wc_product_id);
+					try {
+						$image_attachment->upload_image_from_src($image['url']);
+					} catch (\WC_REST_Exception $e) {
+						echo ("error" . $e->getMessage() . "<br>..." . $product['SKU'] . "..." . $image['url']);
+						array_push($errors, $e->getMessage());
+						continue;
+					}
+					array_push($images, $image_attachment->id);
 				}
-				array_push( $images, $image_attachment->id );
-			}
-			if ( count( $images ) > 0 ) {
-				$wc_product->set_image_id( array_shift( $images ) );
-			}
-			if ( count( $images ) > 0 ) {
-				$wc_product->set_gallery_image_ids( $images );
+				if (count($images) > 0) {
+					$wc_product->set_image_id(array_shift($images));
+				}
+				if (count($images) > 0) {
+					$wc_product->set_gallery_image_ids($images);
+				}
 			}
 			$wc_product->save();
-			if ( ! $is_update ) {
-				array_push( $inserted_product_ids, $wc_product_id );
+			if (!$is_update) {
+				array_push($inserted_product_ids, $wc_product_id);
 			}
-			self::log_to_db( $is_update ? 'wordgram_update_product' : 'wordgram_add_product', $wc_product_id, $product );
+			self::log_to_db($is_update ? 'wordgram_update_product' : 'wordgram_add_product', $wc_product_id, $product);
 		}
-		if ( ! empty( $inserted_product_ids ) ) {
-			self::insert_wordgram_product_ids( $inserted_product_ids );
+		if (!empty($inserted_product_ids)) {
+			self::insert_wordgram_product_ids($inserted_product_ids);
 		}
 
 		return $errors;
