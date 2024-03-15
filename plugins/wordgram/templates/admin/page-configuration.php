@@ -20,14 +20,14 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
 			?>
         </p>
         <form action="<?php echo(WORDGRAM_SERVICE_URL.'/register-shop'); ?>" method="post">
-            <input type="text" id="instagram_username" name="instagram_username" placeholder="Enter your instagram username">
-            <input type="hidden" name="shop_name" value="<?php echo get_bloginfo( 'name' ); ?>">
-            <input type="hidden" name="platform" value="WordPress/WooCommerce">
-            <input type="hidden" name="platform_url" value="<?php echo home_url(); ?>">
-            <input type="hidden" name="redirect_url" value="<?php echo admin_url( 'admin-post.php?action=wordgram-connect-response' ); ?>">
-            <input type="hidden" name="state" value="<?php echo $identifier; ?>">
-            <input type="hidden" name="product_webhook_url" value="<?php echo admin_url( 'admin-ajax.php?action=wordgram-product-hook' ); ?>">
-            <input type="hidden" name="order_webhook_url" value="<?php echo admin_url( 'admin-ajax.php?action=wordgram-order-hook' ); ?>">
+            <input type="text" id="instagram_username" required name="instagram_username" placeholder="Enter your instagram username">
+            <input type="hidden" name="shop_name" required value="<?php echo get_bloginfo( 'name' ); ?>">
+            <input type="hidden" name="platform" required value="WordPress/WooCommerce">
+            <input type="hidden" name="platform_url" required value="<?php echo home_url(); ?>">
+            <input type="hidden" name="redirect_url" required value="<?php echo admin_url( 'admin-post.php?action=wordgram-connect-response' ); ?>">
+            <input type="hidden" name="state" value="<?php echo Admin::get_unique_identifier(); ?>">
+            <input type="hidden" name="product_webhook_url" required value="<?php echo admin_url( 'admin-ajax.php?action=wordgram-product-hook' ); ?>">
+            <input type="hidden" name="order_webhook_url" required value="<?php echo admin_url( 'admin-ajax.php?action=wordgram-order-hook' ); ?>">
             
         <button class="button button-primary connect" >
             <?php _e( 'Connect to Wordgram', 'wordgram' ); ?>
@@ -50,7 +50,7 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
     <section class="connected" style="display: none;">
         <p>
 			<?php _e( 'This website is connected to your Wordgram account' ); ?>
-            &lpar;<strong class="email"></strong>&rpar;
+            &lpar;<strong class="instagram_username"></strong>&rpar;
         </p>
         <button class="button button-secondary disconnect">
 			<?php _e( 'Disconnect', 'wordgram' ); ?>

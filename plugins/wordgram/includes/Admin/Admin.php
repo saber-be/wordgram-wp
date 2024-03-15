@@ -181,7 +181,7 @@ class Admin {
 				$webhook->set_name( $val['name'] );
 				$webhook->set_user_id( $user_id );
 				$webhook->set_topic( $topic );
-				$webhook->set_secret( self::get_unique_identifier() );
+				$webhook->set_secret( self::set_unique_identifier() );
 				$webhook->set_delivery_url( $delivery_url );
 				$webhook->set_status( 'active' );
 				$webhook->save();
@@ -281,12 +281,16 @@ class Admin {
 		] );
 	}
 
-	public static function get_unique_identifier() {
+	public static function set_unique_identifier() {
 		return uniqid( wp_rand( 10000, 99999 ) );
 	}
 
+	public static function get_unique_identifier() {
+		return get_option( self::WORDGRAM_CONNECT_NONCE_OPTION );
+	}
+
 	public static function get_wordgram_connect_url() {
-		$identifier = self::get_unique_identifier();
+		$identifier = self::set_unique_identifier();
 		update_option( self::WORDGRAM_CONNECT_NONCE_OPTION, $identifier, false );
 
 		return add_query_arg( [
@@ -301,26 +305,25 @@ class Admin {
 	}
 
 	public static function wordgram_connect_response() {
-		if ( isset( $_GET['api_key'], $_GET['state'], $_GET['user_email'] )
+		$data = isset($_POST['data']) ? $_POST['data'] : [];
+		if ( isset( $data['api_key'], $data['state'], $data['instagram_username'] )
 		     && get_option( self::WORDGRAM_CONNECT_NONCE_OPTION )
-		        === ( $identifier = sanitize_text_field( $_GET['state'] ) )
+		        === ( $identifier = sanitize_text_field( $data['state'] ) )
 		) {
 			$data = [
-				'api_key'    => sanitize_text_field( $_GET['api_key'] ),
-				'user_email' => sanitize_email( $_GET['user_email'] ),
+				'api_key'    => sanitize_text_field( $data['api_key'] ),
+				'instagram_username' => sanitize_text_field( $data['instagram_username'] ),
 				'identifier' => $identifier,
 			];
 			update_option( self::WORDGRAM_API_KEY_OPTION, $data, false );
 			self::create_wc_order_webhooks();
 			self::log_to_db( 'wordgram_connect_response', $identifier, $data );
-			?>
-            <script>
-                window.opener.location.reload();
-                window.close();
-            </script>
-			<?php
+            wp_send_json_success( [
+				'code'    => 'connected',
+				'message' => 'Connected successfully.',
+			] );
 		} else {
-			wp_die( 'Invalid or malformed request.' );
+			wp_send_json_error();
 		}
 	}
 
@@ -330,6 +333,10 @@ class Admin {
 		}
 
 		return self::$api_key_data;
+	}
+
+	private static function set_api_key_data($api_key) {
+		update_option( self::WORDGRAM_API_KEY_OPTION, $api_key, false );
 	}
 
 	public static function remove_api_key_data() {
@@ -367,39 +374,43 @@ class Admin {
 		wp_send_json_error();
 	}
 
-	public static function wordgram_test_connection() {
+	public static function wordgram_test_connection()
+	{
 		$api_key_data = self::get_api_key_data();
-		if ( empty( $api_key_data ) ) {
-			wp_send_json_success( [
+		if (empty($api_key_data)) {
+			wp_send_json_success([
 				'code'    => 'not_authenticated',
-				'message' => __( 'Not authenticated.', 'wordgram' ),
-			] );
+				'message' => __('Not authenticated.', 'wordgram'),
+			]);
 		}
-		$response = wp_remote_get( add_query_arg( [
-			'api_key'  => $api_key_data['api_key'],
-			'state'    => $api_key_data['identifier'],
-			'platform' => 'WordPress/WooCommerce',
-		], 'https://admin.wordgram.com/api/stores/third-party/isconnect' ), [
+		$response = wp_remote_post(WORDGRAM_SERVICE_URL . '/is-connect', [
+			'body' => json_encode([
+				'api_key'  => $api_key_data['api_key'],
+				'state'    => $api_key_data['identifier'],
+				'instagram_username' => $api_key_data['instagram_username'],
+				'platform' => 'WordPress/WooCommerce'
+			]),
 			'headers' => [
 				'Content-Type' => 'application/json',
-				'Accept'       => 'application/json',
+				'accept'       => 'application/json',
+				'Accept-Encoding' => 'gzip, deflate, br',
 			],
-		] );
-		if ( ! is_wp_error( $response ) ) {
-			$body = json_decode( $response['body'] );
-			if ( $api_key_data['identifier'] === $body->state ) {
-				if ( 200 === $response['response']['code'] && $body && true === $body->success ) {
-					wp_send_json_success( [
+		]);
+		if (!is_wp_error($response)) {
+			$body = json_decode($response['body']);
+			if ($api_key_data['identifier'] === $body->state) {
+				if (200 === $response['response']['code'] && $body && 'success' === $body->status) {
+					wp_send_json_success([
 						'code'       => 'verified_successfully',
-						'user_email' => $api_key_data['user_email'],
-						'message'    => $body->success_message
-					] );
+						'instagram_username' => $api_key_data['instagram_username'],
+						'message'    => $body->message
+					]);
 				} else {
 					self::remove_api_key_data();
-					wp_send_json_success( [
+					wp_send_json_success([
 						'code'    => 'not_found',
 						'message' => 'No matching record found.',
-					] );
+					]);
 				}
 			}
 		}
