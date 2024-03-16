@@ -12,7 +12,7 @@ jQuery(document).ready(function ($) {
                     $container.find('.not-connected').show();
                 } else if (data.data.code === 'verified_successfully') {
                     $testConnection.hide();
-                    $container.find('.connected').show().find('.email').text(data.data.user_email);
+                    $container.find('.connected').show().find('.instagram_username').text(data.data.instagram_username);
                 }
             } else {
                 $testConnection.find('p:not(.error)').hide();
@@ -30,19 +30,37 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
         const $form = $(this).closest('form');
         data = {};
-        $form.find('input').each(function() {
+        let isValid = true;
+        $form.find('input').each(function () {
             data[$(this).attr('name')] = $(this).val();
+            if ($(this).attr('required') && !$(this).val()) {
+                isValid = false;
+                return false;
+            }
         });
+        if (!isValid) {
+            alert('Please fill in all the required fields.');
+            return false;
+        }
         data = JSON.stringify(data);
         $.ajax({
             url: $form.attr('action'),
             method: $form.attr('method'),
             contentType: 'application/json',
             data: data,
-            success: function(response) {
+            success: function (response) {
                 alert(response.message);
+                if (response.status == 'success' && response.data && response.data.redirect_url) {
+                    $.post(response.data.redirect_url, {
+                        data: response.data
+                    }, null, 'application/json').done(function (response_data) {
+                        if (response_data && response_data.success && response_data.data.code === 'connected') {
+                            window.location.reload();
+                        }
+                    });
+                }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 alert("Something went wrong. Please try again later.");
             }
         });

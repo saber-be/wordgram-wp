@@ -73,6 +73,8 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: '1'
     volumes:
       - ./db_2:/var/lib/mysql
+    ports: 
+      - 3309:3306
   db_3:
     image: mysql:8.0
     restart: always
