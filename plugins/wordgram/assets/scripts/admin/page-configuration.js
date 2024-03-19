@@ -53,7 +53,7 @@ jQuery(document).ready(function ($) {
                 if (response.status == 'success' && response.data && response.data.redirect_url) {
                     $.post(response.data.redirect_url, {
                         data: response.data
-                    }, null, 'application/json').done(function (response_data) {
+                    }, null, 'json').done(function (response_data) {
                         if (response_data && response_data.success && response_data.data.code === 'connected') {
                             window.location.reload();
                         }

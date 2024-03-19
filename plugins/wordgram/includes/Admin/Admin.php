@@ -181,7 +181,7 @@ class Admin {
 				$webhook->set_name( $val['name'] );
 				$webhook->set_user_id( $user_id );
 				$webhook->set_topic( $topic );
-				$webhook->set_secret( self::set_unique_identifier() );
+				$webhook->set_secret( self::generate_unique_identifier() );
 				$webhook->set_delivery_url( $delivery_url );
 				$webhook->set_status( 'active' );
 				$webhook->save();
@@ -281,7 +281,7 @@ class Admin {
 		] );
 	}
 
-	public static function set_unique_identifier() {
+	public static function generate_unique_identifier() {
 		return uniqid( wp_rand( 10000, 99999 ) );
 	}
 
@@ -290,7 +290,7 @@ class Admin {
 	}
 
 	public static function get_wordgram_connect_url() {
-		$identifier = self::set_unique_identifier();
+		$identifier = self::generate_unique_identifier();
 		update_option( self::WORDGRAM_CONNECT_NONCE_OPTION, $identifier, false );
 
 		return add_query_arg( [
@@ -355,11 +355,19 @@ class Admin {
 		if ( empty( $api_key_data ) ) {
 			wp_send_json_error();
 		}
-		$response = wp_remote_post( add_query_arg( [
-			'state'    => $api_key_data['identifier'],
-			'platform' => 'WordPress/WooCommerce',
-			'api_key'  => $api_key_data['api_key'],
-		], 'https://admin.wordgram.com/api/stores/third-party/disconnect' ) );
+		$response = wp_remote_post(WORDGRAM_SERVICE_URL . '/disconnect-shop', [
+			'body' => json_encode([
+				'api_key'  => $api_key_data['api_key'],
+				'state'    => $api_key_data['identifier'],
+				'instagram_username' => $api_key_data['instagram_username'],
+				'platform' => 'WordPress/WooCommerce'
+			]),
+			'headers' => [
+				'Content-Type' => 'application/json',
+				'accept'       => 'application/json',
+				'Accept-Encoding' => 'gzip, deflate, br',
+			],
+		]);
 		if ( ! is_wp_error( $response ) && 200 === $response['response']['code'] ) {
 			$body = json_decode( $response['body'] );
 			if ( true === $body->success && $api_key_data['identifier'] === $body->state ) {
