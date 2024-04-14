@@ -55,6 +55,9 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
         <button class="button button-secondary disconnect">
 			<?php _e( 'Disconnect', 'wordgram' ); ?>
         </button>
+        <button class="button button-success sync-shop">
+			<?php _e( 'Sync Shop', 'wordgram' ); ?>
+        </button>
     </section>
 </div>
 <style>

@@ -30,6 +30,8 @@ class Admin {
 
 		add_action( 'wp_ajax_wordgram-disconnect', [ __CLASS__, 'wordgram_disconnect' ] );
 
+		add_action( 'wp_ajax_wordgram-sync-shop', [ __CLASS__, 'wordgram_sync_shop' ] );
+
 		add_action( 'wp_ajax_wordgram-test-connection', [ __CLASS__, 'wordgram_test_connection' ] );
 
 		add_action( 'wp_ajax_wordgram-product-hook', [ __CLASS__, 'wordgram_product_hook' ] );
@@ -376,6 +378,37 @@ class Admin {
 				wp_send_json_success( [
 					'code'    => 'disconnected',
 					'message' => 'Disconnected successfully.',
+				] );
+			}
+		}
+		wp_send_json_error();
+	}
+
+	public static function wordgram_sync_shop() {
+		$api_key_data = self::get_api_key_data();
+		if ( empty( $api_key_data ) ) {
+			wp_send_json_error();
+		}
+		$response = wp_remote_post(WORDGRAM_SERVICE_URL . '/fetch-from-instagram', [
+			'body' => json_encode([
+				'api_key'  => $api_key_data['api_key'],
+				'state'    => $api_key_data['identifier'],
+				'instagram_username' => $api_key_data['instagram_username'],
+				'platform' => 'WordPress/WooCommerce'
+			]),
+			'headers' => [
+				'Content-Type' => 'application/json',
+				'accept'       => 'application/json',
+				'Accept-Encoding' => 'gzip, deflate, br',
+			],
+		]);
+		if ( ! is_wp_error( $response ) && 200 === $response['response']['code'] ) {
+			$body = json_decode( $response['body'] );
+			if ( true === $body->success && $api_key_data['identifier'] === $body->state ) {
+				self::log_to_db( 'wordgram_sync_shop_response', $api_key_data['identifier'], $body );
+				wp_send_json_success( [
+					'code'    => 'synced',
+					'message' => 'The sync process has started.',
 				] );
 			}
 		}
