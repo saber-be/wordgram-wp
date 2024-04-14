@@ -81,4 +81,17 @@ jQuery(document).ready(function ($) {
         }
         return false;
     });
+
+    $container.find('.connected button.sync-shop').on('click', function (e) {
+        $(this).text('Syncing...').prop('disabled', true);
+        $.get(window.ajaxurl, {
+            action: 'wordgram-sync-shop',
+        }, null, 'json').done(function (data) {
+            if (data && data.success && data.data.code === 'synced') {
+                alert(data.data.message);
+                window.location.reload();
+            }
+        });
+        return false;
+    });
 });
