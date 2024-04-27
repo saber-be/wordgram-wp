@@ -288,7 +288,13 @@ class Admin {
 	}
 
 	public static function get_unique_identifier() {
-		return get_option( self::WORDGRAM_CONNECT_NONCE_OPTION );
+		$state = get_option( self::WORDGRAM_CONNECT_NONCE_OPTION );
+		if( $state ) {
+			return $state;
+		}
+		$state = self::generate_unique_identifier();
+		update_option( self::WORDGRAM_CONNECT_NONCE_OPTION, $state, false );
+		return $state;
 	}
 
 	public static function get_wordgram_connect_url() {
