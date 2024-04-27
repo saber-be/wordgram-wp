@@ -543,15 +543,19 @@ class Admin {
 		foreach ( $products as $product ) {
 
 			$wc_product = new \WC_Product_Simple();
+			
+			$SKU = $product['SKU'] ?? null;
 			try {
-				$wc_product->set_sku($product['SKU']);
+				if($SKU){
+					$wc_product->set_sku($SKU);
+				}
 			} catch (\WC_Data_Exception $e) {
 				if ($is_update) {
-					$wc_product = wc_get_product(wc_get_product_id_by_sku($product['SKU']));
+					$wc_product = wc_get_product(wc_get_product_id_by_sku($SKU));
 					if (!is_a($wc_product, \WC_Product::class)) {
 						array_push($errors, new \WP_Error(
 							'product_not_found',
-							"Product with SKU: {$product['SKU']} couldn't be found."
+							"Product with SKU: {$SKU} couldn't be found."
 						));
 						continue;
 					}
@@ -600,10 +604,20 @@ class Admin {
 					$image_attachment = new ImageAttachment(0, $wc_product_id);
 					try {
 						$image_attachment->upload_image_from_src($image['url']);
+						
 					} catch (\WC_REST_Exception $e) {
-						echo ("error" . $e->getMessage() . "<br>..." . $product['SKU'] . "..." . $image['url']);
+						self::log_to_db('wordgram_image_upload_error', $wc_product_id, $image['url']);
+						echo ("error" . $e->getMessage() . "<br>..." . $image['url']);
 						array_push($errors, $e->getMessage());
-						continue;
+						try {
+							$alt_url = WORDGRAM_SERVICE_URL."/proxy?url=" . urlencode($image['url']);
+							$image_attachment->upload_image_from_src($alt_url);
+						} catch (\WC_REST_Exception $e2) {
+							self::log_to_db('wordgram_image_upload_error', $wc_product_id, $alt_url);
+							echo ("error" . $e2->getMessage() . "<br>..." . $alt_url);
+							array_push($errors, $e2->getMessage());
+							continue;
+						}
 					}
 					array_push($images, $image_attachment->id);
 				}
