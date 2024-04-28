@@ -8,7 +8,10 @@ if ( ! current_user_can( 'manage_options' ) ) {
 
 $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGIN_FILE );
 ?>
-
+<link href="<?php echo plugins_url( '/assets/bootstrap-5.3.3-dist/css/bootstrap.min.css', WORDGRAM_PLUGIN_FILE ); ?>" rel="stylesheet">
+<script src="<?php echo plugins_url( '/assets/scripts/jquery-3.7.1.min.js', WORDGRAM_PLUGIN_FILE ); ?>"></script>
+<script src="<?php echo plugins_url( '/assets/scripts/popper-2.11.8.min.js', WORDGRAM_PLUGIN_FILE ); ?>"></script>
+<script src="<?php echo plugins_url( '/assets/bootstrap-5.3.3-dist/js/bootstrap.min.js', WORDGRAM_PLUGIN_FILE ); ?>"></script>
 <div class="wrap <?php echo Admin::CONFIGURATIONS_SUBMENU_SLUG; ?>-container">
     <img class="wordgram-logo" src="<?php echo $wordgram_logo; ?>" alt="wordgram logo"
          width="120">
@@ -55,9 +58,65 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
         <button class="button button-secondary disconnect">
 			<?php _e( 'Disconnect', 'wordgram' ); ?>
         </button>
-        <button class="button button-success sync-shop">
-			<?php _e( 'Sync Shop', 'wordgram' ); ?>
-        </button>
+
+        <form class="mt-3" method="post">
+            <div class="row form-control">
+                <div class="col-12 h4">
+                    Sync Options
+                </div>
+                <div class="col-12 mt-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" name="useDefaultSyncOptions" type="checkbox" id="useDefaultSyncOptions" checked>
+                        <label class="form-check-label" for="useDefaultSyncOptions">Default setting</label>
+                    </div>
+                </div>
+                <div class="col-12 collapse mt-3" id="collapseSyncOptions">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" name="updateTitle" id="updateTitle" checked>
+                                <label class="form-check-label" for="updateTitle">Update Titles</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" name="updateDescription" id="updateDescription" checked>
+                                <label class="form-check-label" for="updateDescription">Update Descriptions</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" name="updateTag" id="updateTag" checked>
+                                <label class="form-check-label" for="updateTag">Update Tags</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" name="updateImage" id="updateImage" checked>
+                                <label class="form-check-label" for="updateImage">Update Images</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" name="updatePrice" id="updatePrice" checked>
+                                <label class="form-check-label" for="updatePrice">Update Prices</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" name="updateQuality" id="updateQuality" checked>
+                                <label class="form-check-label" for="updateQuality">Update Qualities</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="button" class="btn btn-success sync-shop">
+                        <?php _e( 'Sync Shop', 'wordgram' ); ?>
+                    </button>
+                </div>
+            </div>
+        </form>
     </section>
 </div>
 <style>
@@ -82,3 +141,13 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
         color: #aa0000;
     }
 </style>
+<script>
+    $('#useDefaultSyncOptions').change(function() {
+        if(this.checked) {
+            $('#collapseSyncOptions').collapse('hide');
+            $('.sync-options').prop('checked', true);
+        } else {
+            $('#collapseSyncOptions').collapse('show');
+        }
+    });
+</script>

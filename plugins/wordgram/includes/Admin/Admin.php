@@ -391,16 +391,23 @@ class Admin {
 	}
 
 	public static function wordgram_sync_shop() {
+		$data = isset($_POST['data']) ? $_POST['data'] : [];
 		$api_key_data = self::get_api_key_data();
 		if ( empty( $api_key_data ) ) {
 			wp_send_json_error();
 		}
-		$response = wp_remote_post(WORDGRAM_SERVICE_URL . '/fetch-from-instagram', [
+		$response = wp_remote_post(WORDGRAM_SERVICE_URL . '/sync-shop', [
 			'body' => json_encode([
 				'api_key'  => $api_key_data['api_key'],
 				'state'    => $api_key_data['identifier'],
 				'instagram_username' => $api_key_data['instagram_username'],
-				'platform' => 'WordPress/WooCommerce'
+				'platform' => 'WordPress/WooCommerce',
+				'update_price' => isset($data['updatePrice']) ? $data['updatePrice'] : 1,
+				'update_title' => isset($data['updateTitle']) ? $data['updateTitle'] : 1,
+				'update_quality' => isset($data['updateQuality']) ? $data['updateQuality'] : 1,
+				'update_description' => isset($data['updateDescription']) ? $data['updateDescription'] : 1,
+				'update_tags' => isset($data['updateTag']) ? $data['updateTag'] : 1,
+				'update_images' => isset($data['updateImage']) ? $data['updateImage'] : 1,
 			]),
 			'headers' => [
 				'Content-Type' => 'application/json',

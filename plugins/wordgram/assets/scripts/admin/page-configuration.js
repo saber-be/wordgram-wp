@@ -83,9 +83,20 @@ jQuery(document).ready(function ($) {
     });
 
     $container.find('.connected button.sync-shop').on('click', function (e) {
+        e.preventDefault();
+        const $form = $(this).closest('form');
         $(this).text('Syncing...').prop('disabled', true);
-        $.get(window.ajaxurl, {
+        formData = {};
+        $form.find('input').each(function () {
+            if ($(this).attr('type') === 'checkbox') {
+                formData[$(this).attr('name')] = $(this).is(':checked') ? 1 : 0;
+            } else {
+                formData[$(this).attr('name')] = $(this).val();
+            }
+        });
+        $.post(window.ajaxurl, {
             action: 'wordgram-sync-shop',
+            data: formData,
         }, null, 'json').done(function (data) {
             if (data && data.success && data.data.code === 'synced') {
                 alert(data.data.message);
