@@ -74,38 +74,46 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
                     <div class="row">
                         <div class="col-4">
                             <div class="form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updateTitle" id="updateTitle" checked>
+                                <input class="form-check-input sync-options-true" type="checkbox" role="switch" name="updateTitle" id="updateTitle" checked>
                                 <label class="form-check-label" for="updateTitle">Update Titles</label>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updateDescription" id="updateDescription" checked>
+                                <input class="form-check-input sync-options-true" type="checkbox" role="switch" name="updateDescription" id="updateDescription" checked>
                                 <label class="form-check-label" for="updateDescription">Update Descriptions</label>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updateTag" id="updateTag" checked>
+                                <input class="form-check-input sync-options-true" type="checkbox" role="switch" name="updateTag" id="updateTag" checked>
                                 <label class="form-check-label" for="updateTag">Update Tags</label>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updateImage" id="updateImage" checked>
+                                <input class="form-check-input sync-options-true" type="checkbox" role="switch" name="updateImage" id="updateImage" checked>
                                 <label class="form-check-label" for="updateImage">Update Images</label>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updatePrice" id="updatePrice" checked>
+                                <input class="form-check-input sync-options-true" type="checkbox" role="switch" name="updatePrice" id="updatePrice" checked>
                                 <label class="form-check-label" for="updatePrice">Update Prices</label>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updateQuality" id="updateQuality" checked>
+                                <input class="form-check-input sync-options-true" type="checkbox" role="switch" name="updateQuality" id="updateQuality" checked>
                                 <label class="form-check-label" for="updateQuality">Update Qualities</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-switch">
+                                <input class="form-check-input sync-options-false" type="checkbox" role="switch" name="updateAllPosts" id="updateAllPosts">
+                                <label class="form-check-label" for="updateAllPosts"> Update All Posts
+                                        <small class="text-danger mr-2">(If not selected, that will only insert new posts)</small>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -140,12 +148,16 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
     .wordgram-configurations-container p.error {
         color: #aa0000;
     }
+    .form-check-label {
+        cursor: pointer;
+    }
 </style>
 <script>
     $('#useDefaultSyncOptions').change(function() {
         if(this.checked) {
             $('#collapseSyncOptions').collapse('hide');
-            $('.sync-options').prop('checked', true);
+            $('.sync-options-true').prop('checked', true);
+            $('.sync-options-false').prop('checked', false);
         } else {
             $('#collapseSyncOptions').collapse('show');
         }

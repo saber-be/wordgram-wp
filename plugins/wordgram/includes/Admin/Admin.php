@@ -408,6 +408,7 @@ class Admin {
 				'update_description' => isset($data['updateDescription']) ? $data['updateDescription'] : 1,
 				'update_tags' => isset($data['updateTag']) ? $data['updateTag'] : 1,
 				'update_images' => isset($data['updateImage']) ? $data['updateImage'] : 1,
+				'update_all_posts' => isset($data['updateAllPosts']) ? $data['updateAllPosts'] : 0,
 			]),
 			'headers' => [
 				'Content-Type' => 'application/json',
