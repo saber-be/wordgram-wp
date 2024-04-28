@@ -65,46 +65,46 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
                     Sync Options
                 </div>
                 <div class="col-12 mt-3">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" name="useDefaultSyncOptions" type="checkbox" id="useDefaultSyncOptions" checked>
+                    <div class="form-switch">
+                        <input class="form-check-input" name="useDefaultSyncOptions" type="checkbox" role="switch" id="useDefaultSyncOptions" checked>
                         <label class="form-check-label" for="useDefaultSyncOptions">Default setting</label>
                     </div>
                 </div>
                 <div class="col-12 collapse mt-3" id="collapseSyncOptions">
                     <div class="row">
                         <div class="col-4">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" name="updateTitle" id="updateTitle" checked>
+                            <div class="form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updateTitle" id="updateTitle" checked>
                                 <label class="form-check-label" for="updateTitle">Update Titles</label>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" name="updateDescription" id="updateDescription" checked>
+                            <div class="form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updateDescription" id="updateDescription" checked>
                                 <label class="form-check-label" for="updateDescription">Update Descriptions</label>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" name="updateTag" id="updateTag" checked>
+                            <div class="form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updateTag" id="updateTag" checked>
                                 <label class="form-check-label" for="updateTag">Update Tags</label>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" name="updateImage" id="updateImage" checked>
+                            <div class="form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updateImage" id="updateImage" checked>
                                 <label class="form-check-label" for="updateImage">Update Images</label>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" name="updatePrice" id="updatePrice" checked>
+                            <div class="form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updatePrice" id="updatePrice" checked>
                                 <label class="form-check-label" for="updatePrice">Update Prices</label>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input sync-options" type="checkbox" name="updateQuality" id="updateQuality" checked>
+                            <div class="form-switch">
+                                <input class="form-check-input sync-options" type="checkbox" role="switch" name="updateQuality" id="updateQuality" checked>
                                 <label class="form-check-label" for="updateQuality">Update Qualities</label>
                             </div>
                         </div>
