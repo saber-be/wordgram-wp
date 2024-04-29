@@ -116,6 +116,12 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
                                 </label>
                             </div>
                         </div>
+                        <div class="col-4">
+                            <label for="updateSKU"> Update Only This Post (SKU):
+                                    <small class="text-danger mr-2">(Note: It is case sensitive)</small>
+                                    <input class="form-control sync-options-text" type="text" placeholder="Enter SKU of post" name="updateSKU" id="updateSKU">
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="col-12 mt-3">
@@ -158,6 +164,7 @@ $wordgram_logo = plugins_url( '/assets/images/wordgram-logo.png', WORDGRAM_PLUGI
             $('#collapseSyncOptions').collapse('hide');
             $('.sync-options-true').prop('checked', true);
             $('.sync-options-false').prop('checked', false);
+            $('.sync-options-text').val('');
         } else {
             $('#collapseSyncOptions').collapse('show');
         }

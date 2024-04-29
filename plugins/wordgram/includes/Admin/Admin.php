@@ -409,6 +409,7 @@ class Admin {
 				'update_tags' => isset($data['updateTag']) ? $data['updateTag'] : 1,
 				'update_images' => isset($data['updateImage']) ? $data['updateImage'] : 1,
 				'update_all_posts' => isset($data['updateAllPosts']) ? $data['updateAllPosts'] : 0,
+				'SKU' => isset($data['updateSKU']) && $data['updateSKU'] ? $data['updateSKU'] : null,
 			]),
 			'headers' => [
 				'Content-Type' => 'application/json',
