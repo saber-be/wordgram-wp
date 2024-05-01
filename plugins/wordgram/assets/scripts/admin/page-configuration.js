@@ -101,6 +101,9 @@ jQuery(document).ready(function ($) {
             if (data && data.success && data.data.code === 'synced') {
                 alert(data.data.message);
                 window.location.reload();
+            } else {
+                alert('Something went wrong. Please try again later.');
+                window.location.reload();
             }
         });
         return false;
