@@ -682,7 +682,7 @@ class Admin {
 			@unlink( $file_array['tmp_name'] ); // @codingStandardsIgnoreLine.
 	
 			/* translators: %s: error message */
-			return new WP_Error( 'woocommerce_rest_invalid_image', sprintf( __( 'Invalid image: %s', 'woocommerce' ), $file['error'] ), array( 'status' => 400 ) );
+			return new \WP_Error( 'woocommerce_rest_invalid_image', sprintf( __( 'Invalid image: %s', 'woocommerce' ), $file['error'] ), array( 'status' => 400 ) );
 		}
 		do_action( 'woocommerce_rest_api_uploaded_image_from_url', $file, $image_url );
 
