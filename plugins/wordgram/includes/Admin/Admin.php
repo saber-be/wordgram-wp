@@ -609,18 +609,23 @@ class Admin {
 			}
 			if (isset($product['Images'])) {
 				$images        = [];
+				$image_index = 1;
+				$image_attachment_id = null;
 				foreach ($product['Images'] as $image) {
-					$image_attachment = new ImageAttachment(0, $wc_product_id);
+					$image_name = $wc_product_id . '_' . $image_index . '.jpg';
+					$image_index++;
+					$image_url = $image['url'];
 					try {
-						$image_attachment->upload_image_from_src($image['url']);
-						
+						$image_attachment_id = self::custom_attachment_image($image_url, $wc_product_id, $image_name);
 					} catch (\WC_REST_Exception $e) {
-						self::log_to_db('wordgram_image_upload_error', $wc_product_id, $image['url']);
-						echo ("error" . $e->getMessage() . "<br>..." . $image['url']);
+						self::log_to_db('wordgram_image_upload_error', $wc_product_id, $image_url);
+						echo ("error" . $e->getMessage() . "<br>..." . $image_url);
 						array_push($errors, $e->getMessage());
 						try {
-							$alt_url = WORDGRAM_SERVICE_URL."/proxy?url=" . urlencode($image['url']);
+							$alt_url = WORDGRAM_SERVICE_URL."/proxy?url=" . urlencode($image_url);
+							$image_attachment = new ImageAttachment(0, $wc_product_id);
 							$image_attachment->upload_image_from_src($alt_url);
+							$image_attachment_id = $image_attachment->id;
 						} catch (\WC_REST_Exception $e2) {
 							self::log_to_db('wordgram_image_upload_error', $wc_product_id, $alt_url);
 							echo ("error" . $e2->getMessage() . "<br>..." . $alt_url);
@@ -628,7 +633,9 @@ class Admin {
 							continue;
 						}
 					}
-					array_push($images, $image_attachment->id);
+					if($image_attachment_id != null) {
+						array_push($images, $image_attachment_id);
+					}
 				}
 				if (count($images) > 0) {
 					$wc_product->set_image_id(array_shift($images));
@@ -648,6 +655,49 @@ class Admin {
 		}
 
 		return $errors;
+	}
+
+	public static function custom_upload_image_from_url($image_url, $filename = null) {
+		$upload_dir = wp_upload_dir();
+		$image_data = file_get_contents($image_url);
+		$filename = $filename ? $filename : basename($image_url);
+		if (wp_mkdir_p($upload_dir['path'])) {
+			$file = $upload_dir['path'] . '/' . $filename;
+		} else {
+			$file = $upload_dir['basedir'] . '/' . $filename;
+		}
+		file_put_contents($file, $image_data);
+		$file_array         = array();
+		$file_array['name'] = $filename;
+		$file_array['tmp_name'] = $file;
+		$file = wp_handle_sideload(
+			$file_array,
+			array(
+				'test_form' => false,
+				'mimes'     => wc_rest_allowed_image_mime_types(),
+			),
+			current_time( 'Y/m' )
+		);
+		if ( isset( $file['error'] ) ) {
+			@unlink( $file_array['tmp_name'] ); // @codingStandardsIgnoreLine.
+	
+			/* translators: %s: error message */
+			return new WP_Error( 'woocommerce_rest_invalid_image', sprintf( __( 'Invalid image: %s', 'woocommerce' ), $file['error'] ), array( 'status' => 400 ) );
+		}
+		do_action( 'woocommerce_rest_api_uploaded_image_from_url', $file, $image_url );
+
+		return $file;
+	}
+
+	public static function custom_attachment_image($image_url, $object_id, $filename = null) {
+		$file = self::custom_upload_image_from_url($image_url, $filename);
+		$id = wc_rest_set_uploaded_image_as_attachment( $file, $object_id );
+
+		if ( ! wp_attachment_is_image( $id ) ) {
+			/* translators: %s: image ID */
+			throw new \WC_REST_Exception( 'woocommerce_product_invalid_image_id', sprintf( __( '#%s is an invalid image ID.', 'woocommerce' ), $this->id ), 400 );
+		}
+		return $id;
 	}
 
 	private static function get_wordgram_product_ids() {
