@@ -22,9 +22,9 @@ defined( 'ABSPATH' ) || exit;
 define( 'WORDGRAM_PLUGIN_FILE', __FILE__ );
 
 if( function_exists('getenv_docker') ) {
-	define( 'WORDGRAM_SERVICE_URL', getenv_docker('WORDGRAM_SERVICE_URL', 'http://92.246.138.182:81') );
+	define( 'WORDGRAM_SERVICE_URL', getenv_docker('WORDGRAM_SERVICE_URL', 'https://z4m.ir') );
 } else {
-	define( 'WORDGRAM_SERVICE_URL', 'http://92.246.138.182:81');
+	define( 'WORDGRAM_SERVICE_URL', 'https://z4m.ir');
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
