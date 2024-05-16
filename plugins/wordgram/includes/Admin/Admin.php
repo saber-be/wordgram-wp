@@ -638,6 +638,16 @@ class Admin {
 					}
 				}
 				if (count($images) > 0) {
+					// remove old images for this product
+					$old_images = $wc_product->get_gallery_image_ids();
+					if ($wc_product->get_image_id()) {
+						array_push($old_images, $wc_product->get_image_id());
+					}
+					foreach ($old_images as $old_image) {
+						wp_delete_attachment($old_image, true);
+					}
+				}
+				if (count($images) > 0) {
 					$wc_product->set_image_id(array_shift($images));
 				}
 				if (count($images) > 0) {
